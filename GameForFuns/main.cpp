@@ -19,7 +19,7 @@
 #include "Camera.h"
 
 // Window dimensions
-const GLuint WIDTH = 1600, HEIGHT = 1200;
+const GLuint WIDTH = 1200, HEIGHT = 800;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -69,7 +69,8 @@ int main() {
     glfwSetCursorPosCallback(window, MouseCallback);
     
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    
+//    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    std::cout << glfwGetInputMode(window, GLFW_CURSOR_DISABLED) << std::endl;
     
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
@@ -91,11 +92,11 @@ int main() {
     
     // Build and compile our shader program
     Shader lightingShader( "res/shaders/lighting.vs", "res/shaders/lighting.frag" );
-    Shader lampShader( "res/shaders/lamp.vs", "res/shaders/lamp.frag" );
+//    Shader lampShader( "res/shaders/lamp.vs", "res/shaders/lamp.frag" );
+    
     
     // Set up vertex data (and buffer(s)) and attribute pointers
-    GLfloat vertices[] =
-    {
+    GLfloat vertices[] = {
         // Positions            // Normals              // Texture Coords
         -0.5f, -0.5f, -0.5f,    0.0f,  0.0f, -1.0f,     0.0f,  0.0f,
         0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,     1.0f,  0.0f,
@@ -140,14 +141,28 @@ int main() {
         -0.5f,  0.5f, -0.5f,    0.0f,  1.0f,  0.0f,     0.0f,  1.0f
     };
     
+    // Positions all containers
+    glm::vec3 cubePositions[] = {
+        glm::vec3(  0.0f,   0.0f,   0.0f),
+        glm::vec3(  2.0f,   5.0f,   -15.0f),
+        glm::vec3(  -1.5f,  -2.2f,  -2.5f),
+        glm::vec3(  -3.8f,  -2.0f,  -12.3f),
+        glm::vec3(  2.4f,   -0.4f,  -3.5f),
+        glm::vec3(  -1.7f,  3.0f,   -7.5f),
+        glm::vec3(  1.3f,   -2.0f,  -2.5f),
+        glm::vec3(  1.5f,   2.0f,   -2.5f),
+        glm::vec3(  1.5f,   0.2f,   -1.5f),
+        glm::vec3(  -1.3f,  1.0f,   -1.5f)
+    };
+    
     GLuint VBO, boxVAO;
     glGenVertexArrays( 1, &boxVAO );
     glGenBuffers( 1, &VBO );
     
-    glBindVertexArray( boxVAO );
-    
     glBindBuffer( GL_ARRAY_BUFFER, VBO );
     glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+    
+    glBindVertexArray( boxVAO );
     
     // Position attribute
     glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( GLfloat ), ( GLvoid * ) 0 );
@@ -164,20 +179,20 @@ int main() {
     glBindVertexArray( 0 ); // Unbind VAO
     
     
-    GLuint lightVAO;
-    glGenVertexArrays( 1, &lightVAO );
-    glGenBuffers( 1, &VBO );
-    
-    glBindVertexArray( lightVAO );
-    
-    glBindBuffer( GL_ARRAY_BUFFER, VBO );
-    glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
-    
-    // Position attribute
-    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( GLfloat ), ( GLvoid * ) 0 );
-    glEnableVertexAttribArray(0);
-    
-    glBindVertexArray( 0 ); // Unbind VAO
+//    GLuint lightVAO;
+//    glGenVertexArrays( 1, &lightVAO );
+//    glGenBuffers( 1, &VBO );
+//
+//    glBindVertexArray( lightVAO );
+//
+//    glBindBuffer( GL_ARRAY_BUFFER, VBO );
+//    glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+//
+//    // Position attribute
+//    glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( GLfloat ), ( GLvoid * ) 0 );
+//    glEnableVertexAttribArray(0);
+//
+//    glBindVertexArray( 0 ); // Unbind VAO
     
     // load textures
     GLuint diffuseMap, specularMap;
@@ -242,10 +257,12 @@ int main() {
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         
         lightingShader.Use();
-        GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
+//        GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
+        GLint lightDirLoc = glGetUniformLocation(lightingShader.Program, "light.direction");
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
 
-        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+//        glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+        glUniform3f(lightDirLoc, -0.2f, -1.0f, -0.3f);
         glm::vec3 cameraPos = camera.getPosition();
         glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
         
@@ -270,32 +287,47 @@ int main() {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, specularMap);
         
-        glBindVertexArray(boxVAO);
+        // Draw 10 containers with the same VAO and VBO information; only their world space coordinates differ
         glm::mat4 model(1);
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        
+        glBindVertexArray( boxVAO );
+        for ( GLuint i = 0; i < 10; i++) {
+            model = glm::mat4(1);
+            model = glm::translate(model, cubePositions[i]);
+            GLfloat angle = 20.0f * i;
+            model = glm::rotate(model, angle, glm::vec3( 1.0f, 0.3f, 0.5f ));
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr( model ));
+            
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         glBindVertexArray(0);
         
         
-        lampShader.Use();
+//        glBindVertexArray(boxVAO);
+//        glm::mat4 model(1);
+//        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
+//
+//        glBindVertexArray(0);
         
-        modelLoc = glGetUniformLocation(lampShader.Program, "model");
-        viewLoc = glGetUniformLocation(lampShader.Program, "view");
-        projLoc = glGetUniformLocation(lampShader.Program, "projection");
         
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-        
-        model = glm::mat4(1);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f));
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        
-        glBindVertexArray(0);
+//        lampShader.Use();
+//
+//        modelLoc = glGetUniformLocation(lampShader.Program, "model");
+//        viewLoc = glGetUniformLocation(lampShader.Program, "view");
+//        projLoc = glGetUniformLocation(lampShader.Program, "projection");
+//
+//        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+//        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+//
+//        model = glm::mat4(1);
+//        model = glm::translate(model, lightPos);
+//        model = glm::scale(model, glm::vec3(0.2f));
+//        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+//
+//        glBindVertexArray(lightVAO);
+//        glDrawArrays(GL_TRIANGLES, 0, 36);
+//
+//        glBindVertexArray(0);
         
         // Swap the screen buffers
         glfwSwapBuffers( window );
@@ -303,7 +335,7 @@ int main() {
     
     // Properly de-allocate all resources once they've outlived their purpose
     glDeleteVertexArrays( 1, &boxVAO );
-    glDeleteVertexArrays( 1, &lightVAO );
+//    glDeleteVertexArrays( 1, &lightVAO );
     glDeleteBuffers( 1, &VBO );
     
     // Terminate GLFW, clearing any resources allocated by GLFW.
