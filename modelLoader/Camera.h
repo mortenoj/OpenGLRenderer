@@ -20,8 +20,7 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT,
-    UP
+    RIGHT
 };
 
 const GLfloat YAW = -90.0f;
@@ -70,9 +69,7 @@ public:
     
     void processKeyboard(Camera_Movement direction, GLfloat deltaTime) {
         GLfloat velocity = this->movementSpeed * deltaTime;
-        if (direction == UP) {
-            this->acceleration.y += 0.003f;
-        }
+        
         if (direction == FORWARD) {
             this->position += this->front * velocity;
         }
@@ -84,19 +81,6 @@ public:
         }
         if (direction == RIGHT) {
             this->position += this->right * velocity;
-        }
-    }
-    
-    void update(GLfloat deltaTime) {
-        this->acceleration += glm::vec3(0.0f, -0.1f * deltaTime, 0.0f); // Gravity
-        this->position += this->velocity;
-        this->velocity += this->acceleration;
-        this->acceleration = glm::vec3(0.0f);
-    }
-    
-    void intersect() {
-        if (this->position.y <= 0.0f) {
-            this->position.y = 0.0f;
         }
     }
     
@@ -138,10 +122,6 @@ public:
         return this->position;
     }
     
-    void setPosition(glm::vec3 position) {
-        this->position = position;
-    }
-    
     glm::vec3 getFront() {
         return this->front;
     }
@@ -152,9 +132,6 @@ private:
     glm::vec3 up;
     glm::vec3 right;
     glm::vec3 worldUp;
-    GLfloat gravity = 0.9f;
-    glm::vec3 acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
     
     GLfloat yaw;
     GLfloat pitch;
