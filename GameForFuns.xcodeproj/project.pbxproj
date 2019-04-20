@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A9CE676226B55DC00C135EA /* libassimp.4.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A9CE675226B55DC00C135EA /* libassimp.4.1.0.dylib */; };
 		5ADCABFE226A0F8C00B96B94 /* res in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5ADCABFD226A0BCD00B96B94 /* res */; };
 		5ADCAC48226A127B00B96B94 /* image_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 5ADCAC33226A127B00B96B94 /* image_helper.c */; };
 		5ADCAC49226A127B00B96B94 /* image_DXT.c in Sources */ = {isa = PBXBuildFile; fileRef = 5ADCAC36226A127B00B96B94 /* image_DXT.c */; };
@@ -42,6 +43,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5A9CE675226B55DC00C135EA /* libassimp.4.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.4.1.0.dylib; path = ../../../../../usr/local/Cellar/assimp/4.1.0/lib/libassimp.4.1.0.dylib; sourceTree = "<group>"; };
+		5A9CE677226B564600C135EA /* Mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mesh.h; sourceTree = "<group>"; };
+		5A9CE678226B621F00C135EA /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
 		5ADCABFD226A0BCD00B96B94 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = res; sourceTree = "<group>"; };
 		5ADCAC33226A127B00B96B94 /* image_helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image_helper.c; sourceTree = "<group>"; };
 		5ADCAC34226A127B00B96B94 /* stbi_pkm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stbi_pkm.h; sourceTree = "<group>"; };
@@ -80,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A9CE676226B55DC00C135EA /* libassimp.4.1.0.dylib in Frameworks */,
 				5AF495952268A8CE00EDA146 /* glm.pc in Frameworks */,
 				5AF4956C226888C900EDA146 /* libglfw.3.3.dylib in Frameworks */,
 				5AF4956A2268886A00EDA146 /* libGLEW.2.1.0.dylib in Frameworks */,
@@ -143,6 +148,8 @@
 				5AF4955F226886DA00EDA146 /* main.cpp */,
 				5AF49571226897CF00EDA146 /* Shader.h */,
 				5ADCAC56226A290800B96B94 /* Camera.h */,
+				5A9CE677226B564600C135EA /* Mesh.h */,
+				5A9CE678226B621F00C135EA /* Model.h */,
 			);
 			path = GameForFuns;
 			sourceTree = "<group>";
@@ -150,6 +157,7 @@
 		5AF495662268881500EDA146 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5A9CE675226B55DC00C135EA /* libassimp.4.1.0.dylib */,
 				5AF495942268A8CE00EDA146 /* glm.pc */,
 				5AF4956D22688DFE00EDA146 /* libSDL2-2.0.0.dylib */,
 				5AF4956B226888C900EDA146 /* libglfw.3.3.dylib */,
@@ -348,6 +356,7 @@
 					/usr/local/Cellar/glew/2.1.0/lib,
 					/usr/local/Cellar/glfw/3.3/lib,
 					/usr/local/Cellar/sdl2/2.0.9_1/lib,
+					/usr/local/Cellar/assimp/4.1.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -362,6 +371,7 @@
 					/usr/local/Cellar/glew/2.1.0/lib,
 					/usr/local/Cellar/glfw/3.3/lib,
 					/usr/local/Cellar/sdl2/2.0.9_1/lib,
+					/usr/local/Cellar/assimp/4.1.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
