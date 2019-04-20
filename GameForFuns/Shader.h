@@ -96,6 +96,11 @@ public:
     void Use() {
         glUseProgram( this->Program );
     }
+    
+    ~Shader() {
+        if(Program != 0)                           // delete only if successfully created
+            glDeleteShader(Program);      // delete program
+    }
 };
 
 #endif
